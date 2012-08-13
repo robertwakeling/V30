@@ -12,6 +12,8 @@
 @interface Tester : UIViewController <UITableViewDelegate, UITableViewDataSource>
 
 {
+    NSNotification *theNotification;
+    
     IBOutlet UITableView *myTableView;
     NSArray *theArray;
     

@@ -40,13 +40,13 @@
 
 -(void)receiveNotification:(NSNotification *)notification
 {
+    //  theNotification = [[NSNotification alloc] init];
     
     if (!path) {
         
-    
-    path = [[NSBundle mainBundle] pathForResource:@"OverallDictionary" ofType:@"plist"];
-    theDictionary = [[NSDictionary alloc] initWithContentsOfFile:path];
-    NSLog(@"Created upon notification");
+        
+        path = [[NSBundle mainBundle] pathForResource:@"OverallDictionary" ofType:@"plist"];
+        theDictionary = [[NSDictionary alloc] initWithContentsOfFile:path];
     }
     
     NSArray *temporaryArray = [theDictionary allKeys];
@@ -63,115 +63,67 @@
                 theFinalScore++;
                 [[NSUserDefaults standardUserDefaults] setInteger:theFinalScore forKey:@"theFinalScore"];
                 [self updateTheProgressView];
-
+                
             }
         }
     }
+    NSLog(@"received %@", allCompletedTopics);
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadTheTable" object:nil];
+  //  [self.myTableView reloadData];
     
-
-    
-    /*
-    if ([[notification name] isEqualToString:@"Microscopes3"]) {
-        
-        if (!allCompletedTopics) {
-            allCompletedTopics = [[NSMutableArray alloc] init];
-            
-        }
-        if (![allCompletedTopics containsObject:@"Microscopes level 3"]) {
-            [allCompletedTopics addObject:@"Microscopes level 3"];
-            
-            defaults = [NSUserDefaults standardUserDefaults];
-            [defaults setObject:allCompletedTopics forKey:@"hi"];
-            theFinalScore++;
-            [[NSUserDefaults standardUserDefaults] setInteger:theFinalScore forKey:@"theFinalScore"];
-            
-            [self updateTheProgressView];
-        }
-        
-        //    NSLog(@"%@", allCompletedTopics);
-    }
-    if ([[notification name] isEqualToString:@"Cells3"]) {
-        if (!allCompletedTopics) {
-            allCompletedTopics = [[NSMutableArray alloc] init];
-        }
-        if (![allCompletedTopics containsObject:@"Cells level 3"]) {
-            [allCompletedTopics addObject:@"Cells level 3"];
-            
-            
-            
-            defaults = [NSUserDefaults standardUserDefaults];
-            [defaults setObject:allCompletedTopics forKey:@"hi"];
-            theFinalScore++;
-            [[NSUserDefaults standardUserDefaults] setInteger:theFinalScore forKey:@"theFinalScore"];
-            
-                        [self updateTheProgressView];
-        }
-        //      NSLog(@"%@", allCompletedTopics);
-    }
-    if ([[notification name] isEqualToString:@"Cells4"]) {
-        if (!allCompletedTopics) {
-            allCompletedTopics = [[NSMutableArray alloc] init];
-        }
-        
-        if (![allCompletedTopics containsObject:@"Cells level 4"]) {
-            
-            
-            [allCompletedTopics addObject:@"Cells level 4"];
-            
-            defaults = [NSUserDefaults standardUserDefaults];
-            [defaults setObject:allCompletedTopics forKey:@"hi"];
-            theFinalScore++;
-            [[NSUserDefaults standardUserDefaults] setInteger:theFinalScore forKey:@"theFinalScore"];
-            //   NSLog(@"%@", allCompletedTopics);
-                        [self updateTheProgressView];
-        }
-    }
-    
-    if ([[notification name] isEqualToString:@"AcidSafety3"]) {
-        if (!allCompletedTopics) {
-            allCompletedTopics = [[NSMutableArray alloc] init];
-        }
-        
-        if (![allCompletedTopics containsObject:@"Staying Safe level 3"]) {
-            
-            
-            [allCompletedTopics addObject:@"Staying Safe level 3"];
-            
-            defaults = [NSUserDefaults standardUserDefaults];
-            [defaults setObject:allCompletedTopics forKey:@"hi"];
-            theFinalScore++;
-            [[NSUserDefaults standardUserDefaults] setInteger:theFinalScore forKey:@"theFinalScore"];
-            //   NSLog(@"%@", allCompletedTopics);
-                        [self updateTheProgressView];
-        }
-    }
-    
-    if ([[notification name] isEqualToString:@"SolarSystem4"]) {
-        if (!allCompletedTopics) {
-            allCompletedTopics = [[NSMutableArray alloc] init];
-        }
-        
-        if (![allCompletedTopics containsObject:@"Solar System level 4"]) {
-            
-            
-            [allCompletedTopics addObject:@"Solar System level 4"];
-            
-            defaults = [NSUserDefaults standardUserDefaults];
-            [defaults setObject:allCompletedTopics forKey:@"hi"];
-            theFinalScore++;
-            [[NSUserDefaults standardUserDefaults] setInteger:theFinalScore forKey:@"theFinalScore"];
-            //   NSLog(@"%@", allCompletedTopics);
-                        [self updateTheProgressView];
-        }
-    }
-    NSLog(@"%i", theFinalScore);
-                [self updateTheProgressView];
-     */
 }
 
--(void)doItAgain
+- (void)viewDidLoad
+{
+    
+    [super viewDidLoad];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTable:) name:@"reloadTheTable" object:nil];
+    
+	// Do any additional setup after loading the view.
+    allCompletedTopics = [[[NSUserDefaults standardUserDefaults] objectForKey:@"hi"] mutableCopy];
+    
+    [defaults setObject:allCompletedTopics forKey:@"theKey"];
+    
+    if (!path) {
+        path = [[NSBundle mainBundle] pathForResource:@"OverallDictionary" ofType:@"plist"];
+        theDictionary = [[NSDictionary alloc] initWithContentsOfFile:path];
+        //  NSLog(@"Created on view did load");
+    }
+    
+    NSString *path1 = [[NSBundle mainBundle] pathForResource:@"Keys" ofType:@"plist"];
+    NSArray *theKeys = [[NSArray alloc] initWithContentsOfFile:path1];
+    
+    for (NSString *theString in theKeys) {
+        //  NSLog(@"%@", theString);
+        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNotification:) name:theString object:nil];
+        
+    }
+    theFinalScore = [[NSUserDefaults standardUserDefaults] integerForKey:@"theFinalScore"];
+    
+    [self updateTheProgressView];
+    NSLog(@"%@", allCompletedTopics);
+    //   [myTableView reloadData];
+    
+    
+    }
+
+
+
+/*
+  -(void)doItAgain
+{
+     
+    NSLog(@"delayed");
+    [myTableView reloadData];
+
+}
+ */
+
+- (void)reloadTable:(NSNotification *)notification
 {
     [myTableView reloadData];
+    NSLog(@"hi");
 }
 
 -(IBAction)pushToFirstView {
@@ -179,155 +131,6 @@
     [self.navigationController popToRootViewControllerAnimated:YES];
 }
 
-- (void)viewDidLoad
-{
-            
-    [super viewDidLoad];
-	// Do any additional setup after loading the view.
-    allCompletedTopics = [[[NSUserDefaults standardUserDefaults] objectForKey:@"hi"] mutableCopy];
-      
-    [defaults setObject:allCompletedTopics forKey:@"theKey"];
-    
-    if (!path) {
-        path = [[NSBundle mainBundle] pathForResource:@"OverallDictionary" ofType:@"plist"];
-        theDictionary = [[NSDictionary alloc] initWithContentsOfFile:path];
-      //  NSLog(@"Created on view did load");
-    }
-
-    NSString *path1 = [[NSBundle mainBundle] pathForResource:@"Keys" ofType:@"plist"];
-    NSArray *theKeys = [[NSArray alloc] initWithContentsOfFile:path1];
-    
-    for (NSString *theString in theKeys) {
-        //  NSLog(@"%@", theString);
-        [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNotification:) name:theString object:nil];
-
-    }  
-        theFinalScore = [[NSUserDefaults standardUserDefaults] integerForKey:@"theFinalScore"];
-
-        [self updateTheProgressView];
-    [self doItAgain];
- //   [myTableView reloadData];
-    
-
-   /*
-    levelThree = [[NSMutableArray alloc] init];
-    levelFour = [[NSMutableArray alloc] init];
-    levelFive = [[NSMutableArray alloc] init];
-    levelSix = [[NSMutableArray alloc] init];
-    
-    for (id object in allCompletedTopics) {
-        if ([object rangeOfString:@"level 3"].location != NSNotFound) 
-        {
-            [levelThree addObject:object];
-        }
-        levelThreeDict = [NSDictionary dictionaryWithObject:levelThree forKey:@"Levels"];
-        
-        if ([object rangeOfString:@"level 4"].location != NSNotFound) 
-        {
-            [levelFour addObject:object];
-        }
-        levelFourDict = [NSDictionary dictionaryWithObject:levelFour forKey:@"Levels"];
-        
-        if ([object rangeOfString:@"level 5"].location != NSNotFound) 
-        {
-            [levelFive addObject:object];
-        }
-        levelFiveDict = [NSDictionary dictionaryWithObject:levelFive forKey:@"Levels"];
-        
-        if ([object rangeOfString:@"level 6"].location != NSNotFound) 
-        {
-            [levelSix addObject:object];
-        }
-        levelSixDict = [NSDictionary dictionaryWithObject:levelSix forKey:@"Levels"];
-    }
-    
-    allLevels = [[NSMutableArray alloc] initWithObjects:levelThreeDict, levelFourDict, levelFiveDict, levelSixDict, nil];
-*/
-    
-    /*  
-     //   allCompletedTopics = [[NSUserDefaults standardUserDefaults] objectForKey:@"theKey"];
-     //   if(allCompletedTopics)
-     //   {
-     //   allCompletedTopics = [NSKeyedUnarchiver unarchiveObjectWithData:data];
-     //   }
-     
-     //   else{
-     //     allCompletedTopics = [[NSMutableArray alloc] init];
-     
-     //     NSLog(@"Yes?");
-     
-     //    }
-     
-     //   defaults = [NSUserDefaults standardUserDefaults];
-     
-     //   data = [NSKeyedArchiver archivedDataWithRootObject:allCompletedTopics];
-     
-     // [defaults setObject:data forKey:@"myArrayKey"];
-     
-     // [self retrieveTheArray];
-     */
-    
-    
-    /* maintainingTheArray = [NSUserDefaults standardUserDefaults];
-     [maintainingTheArray setObject:allCompletedTopics forKey:@"theKey"];
-     
-     NSLog(@"%@", [[NSUserDefaults standardUserDefaults] objectForKey:@"theKey"]);
-     
-     //   [allCompletedTopics addObject:@"microscopesLevel3"];
-     
-     //   NSLog(@"%@", allCompletedTopics);
-     
-     */
-    
-    
-    
-    /*    
-    levelThree = [[NSMutableArray alloc] init];
-    levelFour = [[NSMutableArray alloc] init];
-    levelFive = [[NSMutableArray alloc] init];
-    levelSix = [[NSMutableArray alloc] init];
-    
-    for (id object in allCompletedTopics) {
-        if ([object rangeOfString:@"level 3"].location != NSNotFound) 
-        {
-            [levelThree addObject:object];
-        }
-        levelThreeDict = [NSDictionary dictionaryWithObject:levelThree forKey:@"Levels"];
-        
-        if ([object rangeOfString:@"level 4"].location != NSNotFound) 
-        {
-            [levelFour addObject:object];
-        }
-        levelFourDict = [NSDictionary dictionaryWithObject:levelFour forKey:@"Levels"];
-        
-        if ([object rangeOfString:@"level 5"].location != NSNotFound) 
-        {
-            [levelFive addObject:object];
-        }
-        levelFiveDict = [NSDictionary dictionaryWithObject:levelFive forKey:@"Levels"];
-        
-        if ([object rangeOfString:@"level 6"].location != NSNotFound) 
-        {
-            [levelSix addObject:object];
-        }
-        levelSixDict = [NSDictionary dictionaryWithObject:levelSix forKey:@"Levels"];
-    }
-    NSLog(@"%@", levelFiveDict);
-    
-    allLevels = [[NSMutableArray alloc] initWithObjects:levelThreeDict, levelFourDict, levelFiveDict, levelSixDict, nil];
-    */
-    
-    
-    
-    /*
-     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNotification:) name:@"Mic" object:nil];   
-     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNotification:) name:@"Cells3" object:nil];
-     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNotification:) name:@"CellsFour" object:nil];
-     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNotification:) name:@"Hazards" object:nil];
-     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(receiveNotification:) name:@"PlanetaryOrder" object:nil];
-     */
-    
-}
 
 -(void)creatingTheData
 {
@@ -336,29 +139,9 @@
     if (!levelThree) {
         levelThree = [[NSMutableArray alloc] init];
     }
-   /* if (!levelFour) {
-        levelFour = [[NSMutableArray alloc] init];
-    }
-    if (!levelFive) {
-        levelFive = [[NSMutableArray alloc] init];
-    }
-    if (!levelSix) {
-        levelSix = [[NSMutableArray alloc] init];
-    }
-    */
+   
     levelThreeFinal = [[NSMutableArray alloc] initWithCapacity:48];
    
-    /*
-    levelFourFinal = [[NSMutableArray alloc] initWithCapacity:48];
-    levelFiveFinal = [[NSMutableArray alloc] initWithCapacity:48];
-    levelSixFinal = [[NSMutableArray alloc] initWithCapacity:48];
-    */
-    
-    //for (NSString *object in levelThree) {
-    //    NSString *theTemp = [object substringToIndex:object.length - 8];
-   //     [levelThreeFinal addObject:theTemp];
-        //NSLog(@"%@", levelThreeFinal);
-    //}
     
     for (NSString *object in allCompletedTopics) {
         if (([object rangeOfString:@"level 3"].location != NSNotFound) && (![levelThree containsObject:object]))
@@ -372,41 +155,8 @@
             
         }
         levelThreeDict = [NSDictionary dictionaryWithObject:levelThreeFinal forKey:@"Levels"];
-        
-        if (([object rangeOfString:@"level 4"].location != NSNotFound) && (![levelFour containsObject:object]))
-        {
-            
-         //  NSLog(@"%@", object);
-            [levelFour addObject:object];
-            NSString *theTemp = [object substringToIndex:object.length - 8];
-            [levelFourFinal addObject:theTemp];
-            
-        }
-        /*
-        levelFourDict = [NSDictionary dictionaryWithObject:levelFourFinal forKey:@"Levels"];
-        
-        if (([object rangeOfString:@"level 5"].location != NSNotFound) && (![levelFive containsObject:object]))
-        {
-        //    NSLog(@"%@", object);
-            [levelFive addObject:object];
-            NSString *theTemp = [object substringToIndex:object.length - 8];
-            [levelFiveFinal addObject:theTemp];
-            
-        }
-        levelFiveDict = [NSDictionary dictionaryWithObject:levelFiveFinal forKey:@"Levels"];
-        
-        if (([object rangeOfString:@"level 6"].location != NSNotFound) && (![levelSix containsObject:object]))
-        {
-         //   NSLog(@"%@", object);
-            [levelSix addObject:object];
-            NSString *theTemp = [object substringToIndex:object.length - 8];
-            [levelSixFinal addObject:theTemp];
-            
-        }
-        levelSixDict = [NSDictionary dictionaryWithObject:levelSixFinal forKey:@"Levels"];
-    */
-    }
-    // NSLog(@"%@", levelFiveDict);
+            }
+ 
     
     allLevels = [[NSMutableArray alloc] initWithObjects:levelThreeDict,
                  //levelFourDict,
@@ -415,40 +165,12 @@
                  nil];
     
     
-    [myTableView reloadData];
+  //  [myTableView reloadData];
 
     
-//    for (id object in allCompletedTopics) {
-//        if (([object rangeOfString:@"level 3"].location != NSNotFound) && (![levelThree containsObject:object]))
-//        {
-//            
-//            [levelThree addObject:object];
-//        }
-//        levelThreeDict = [NSDictionary dictionaryWithObject:levelThree forKey:@"Levels"];
-//        
-//        if (([object rangeOfString:@"level 4"].location != NSNotFound) && (![levelFour containsObject:object]))
-//        {
-//            [levelFour addObject:object];
-//        }
-//        levelFourDict = [NSDictionary dictionaryWithObject:levelFour forKey:@"Levels"];
-//        
-//        if (([object rangeOfString:@"level 5"].location != NSNotFound) && (![levelFive containsObject:object]))
-//        {
-//            [levelFive addObject:object];
-//        }
-//        levelFiveDict = [NSDictionary dictionaryWithObject:levelFive forKey:@"Levels"];
-//        
-//        if (([object rangeOfString:@"level 6"].location != NSNotFound) && (![levelSix containsObject:object]))
-//        {
-//            [levelSix addObject:object];
-//        }
-//        levelSixDict = [NSDictionary dictionaryWithObject:levelSix forKey:@"Levels"];
-//    }
-//   // NSLog(@"%@", levelFiveDict);
-//    
-//    allLevels = [[NSMutableArray alloc] initWithObjects:levelThreeDict, levelFourDict, levelFiveDict, levelSixDict, nil];
-
 }
+
+
 
 -(void)updateTheProgressView
 {
@@ -521,75 +243,7 @@
         }
     }
   //  self.title = [NSString stringWithFormat:@"Level %@", finalOverallLevel.text];
-    [myTableView reloadData];
-}
-
-
--(void)viewDidAppear:(BOOL)animated
-{
-    [self doItAgain];
-    
-    
-    
-  //  [self creatingTheData];
-    
-//    levelThreeFinal = [[NSMutableArray alloc] initWithCapacity:48];
-//    levelFourFinal = [[NSMutableArray alloc] initWithCapacity:48];
-//    levelFiveFinal = [[NSMutableArray alloc] initWithCapacity:48];
-//    levelSixFinal = [[NSMutableArray alloc] initWithCapacity:48];
-//    
-//    for (NSString *object in levelThree) {
-//        NSString *theTemp = [object substringToIndex:object.length - 8];
-//        [levelThreeFinal addObject:theTemp];
-//        //NSLog(@"%@", levelThreeFinal);
-//    }
-//    
-//    for (NSString *object in allCompletedTopics) {
-//        if (([object rangeOfString:@"level 3"].location != NSNotFound) && (![levelThree containsObject:object]))
-//        {
-//            
-//            [levelThree addObject:object];
-//            NSString *theTemp = [object substringToIndex:object.length - 8];
-//            [levelThreeFinal addObject:theTemp];
-//
-//            
-//        }
-//        levelThreeDict = [NSDictionary dictionaryWithObject:levelThreeFinal forKey:@"Levels"];
-//        
-//        if (([object rangeOfString:@"level 4"].location != NSNotFound) && (![levelFour containsObject:object]))
-//        {
-//            [levelFour addObject:object];
-//            NSString *theTemp = [object substringToIndex:object.length - 8];
-//            [levelFourFinal addObject:theTemp];
-//
-//        }
-//        levelFourDict = [NSDictionary dictionaryWithObject:levelFourFinal forKey:@"Levels"];
-//        
-//        if (([object rangeOfString:@"level 5"].location != NSNotFound) && (![levelFive containsObject:object]))
-//        {
-//            [levelFive addObject:object];
-//            NSString *theTemp = [object substringToIndex:object.length - 8];
-//            [levelFiveFinal addObject:theTemp];
-//
-//        }
-//        levelFiveDict = [NSDictionary dictionaryWithObject:levelFiveFinal forKey:@"Levels"];
-//        
-//        if (([object rangeOfString:@"level 6"].location != NSNotFound) && (![levelSix containsObject:object]))
-//        {
-//            [levelSix addObject:object];
-//            NSString *theTemp = [object substringToIndex:object.length - 8];
-//            [levelSixFinal addObject:theTemp];
-//
-//        }
-//        levelSixDict = [NSDictionary dictionaryWithObject:levelSixFinal forKey:@"Levels"];
-//    }
-//    // NSLog(@"%@", levelFiveDict);
-//    
-//    allLevels = [[NSMutableArray alloc] initWithObjects:levelThreeDict, levelFourDict, levelFiveDict, levelSixDict, nil];
-//
-//    
-    [myTableView reloadData];
-    
+ //   [myTableView reloadData];
 }
 
 
@@ -616,7 +270,7 @@
     
     // Configure the cell...
     
-    
+
   //  cell.textLabel.text = [allCompletedTopics objectAtIndex:indexPath.row];
     
    NSDictionary *dictionary = [allLevels objectAtIndex:indexPath.section];
@@ -655,11 +309,12 @@
 
 -(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-//    NSString *theCompletedViewController = [theDictionary objectForKey:<#(id)#>];
+//    NSString *theCompletedViewController = [theDictionary objectForKey:];
    // NSLog(@"%@", tableView);
    // NSLog(@"%@", [theDictionary allKeysForObject:indexPath]);
     
 }
+
 
 
 - (void)viewDidUnload
