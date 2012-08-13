@@ -63,6 +63,7 @@
                 theFinalScore++;
                 [[NSUserDefaults standardUserDefaults] setInteger:theFinalScore forKey:@"theFinalScore"];
                 [self updateTheProgressView];
+
             }
         }
     }
@@ -168,6 +169,10 @@
      */
 }
 
+-(void)doItAgain
+{
+    [myTableView reloadData];
+}
 
 -(IBAction)pushToFirstView {
     
@@ -200,6 +205,9 @@
         theFinalScore = [[NSUserDefaults standardUserDefaults] integerForKey:@"theFinalScore"];
 
         [self updateTheProgressView];
+    [self doItAgain];
+ //   [myTableView reloadData];
+    
 
    /*
     levelThree = [[NSMutableArray alloc] init];
@@ -328,7 +336,7 @@
     if (!levelThree) {
         levelThree = [[NSMutableArray alloc] init];
     }
-    if (!levelFour) {
+   /* if (!levelFour) {
         levelFour = [[NSMutableArray alloc] init];
     }
     if (!levelFive) {
@@ -337,11 +345,14 @@
     if (!levelSix) {
         levelSix = [[NSMutableArray alloc] init];
     }
-    
+    */
     levelThreeFinal = [[NSMutableArray alloc] initWithCapacity:48];
+   
+    /*
     levelFourFinal = [[NSMutableArray alloc] initWithCapacity:48];
     levelFiveFinal = [[NSMutableArray alloc] initWithCapacity:48];
     levelSixFinal = [[NSMutableArray alloc] initWithCapacity:48];
+    */
     
     //for (NSString *object in levelThree) {
     //    NSString *theTemp = [object substringToIndex:object.length - 8];
@@ -371,6 +382,7 @@
             [levelFourFinal addObject:theTemp];
             
         }
+        /*
         levelFourDict = [NSDictionary dictionaryWithObject:levelFourFinal forKey:@"Levels"];
         
         if (([object rangeOfString:@"level 5"].location != NSNotFound) && (![levelFive containsObject:object]))
@@ -392,10 +404,15 @@
             
         }
         levelSixDict = [NSDictionary dictionaryWithObject:levelSixFinal forKey:@"Levels"];
+    */
     }
     // NSLog(@"%@", levelFiveDict);
     
-    allLevels = [[NSMutableArray alloc] initWithObjects:levelThreeDict, levelFourDict, levelFiveDict, levelSixDict, nil];
+    allLevels = [[NSMutableArray alloc] initWithObjects:levelThreeDict,
+                 //levelFourDict,
+                 //levelFiveDict,
+                 //levelSixDict,
+                 nil];
     
     
     [myTableView reloadData];
@@ -503,13 +520,17 @@
             }
         }
     }
-    self.title = [NSString stringWithFormat:@"Level %@", finalOverallLevel.text];
+  //  self.title = [NSString stringWithFormat:@"Level %@", finalOverallLevel.text];
     [myTableView reloadData];
 }
 
 
 -(void)viewDidAppear:(BOOL)animated
 {
+    [self doItAgain];
+    
+    
+    
   //  [self creatingTheData];
     
 //    levelThreeFinal = [[NSMutableArray alloc] initWithCapacity:48];
@@ -568,7 +589,9 @@
 //
 //    
     [myTableView reloadData];
+    
 }
+
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
@@ -624,8 +647,11 @@
         default:
             break;
     }
-    return theTitle;
+    //return theTitle;
+    
+    return @"Your progress so far!";
 }
+
 
 -(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
 {
