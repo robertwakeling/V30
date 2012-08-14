@@ -70,15 +70,15 @@
     NSLog(@"received %@", allCompletedTopics);
     [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadTheTable" object:nil];
         [myTableView reloadData];
-    
+        myTableView.backgroundColor = [UIColor orangeColor];
     }
 
     - (void)viewDidLoad
     {
     
     [super viewDidLoad];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTable) name:@"reloadTheTable" object:nil];
+        
+        myTableView.backgroundColor = [UIColor redColor];
         
     
 	// Do any additional setup after loading the view.
@@ -106,14 +106,14 @@
     NSLog(@"%@", allCompletedTopics);
     //   [myTableView reloadData];
     
-    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTable) name:@"reloadTheTable" object:nil];
     }
 
 - (void)reloadTable
 //:(NSNotification *)notification
 {
     [myTableView reloadData];
-    NSLog(@"hi");
+    NSLog(@"hi %@", myTableView.description);
     
 }
 
@@ -165,84 +165,27 @@
     
     float temporary = theFinalScore;
     overallProgress.progress = temporary / 192;
-   // NSLog(@"%f", overallProgress.progress);
-    
+  
     float theFloatThree = levelThree.count;
-    float theFloatFour = levelFour.count;
-    float theFloatFive = levelFive.count;
-    float theFloatSix = levelSix.count;
-    
-//    NSLog(@"Completed level 3 is %.3f percent", theFloatThree*100);
-    
+ 
     levelThreeProgress.progress = theFloatThree / 48;
-    levelFourProgress.progress = theFloatFour / 48;
-    levelFiveProgress.progress = theFloatFive / 48;
-    levelSixProgress.progress = theFloatSix / 48;
-    
+        
     three.text = [NSString stringWithFormat:@"%.1f %%", theFloatThree/48 * 100];
-    four.text = [NSString stringWithFormat:@"%.1f %%", theFloatFour/48 * 100];
-    five.text = [NSString stringWithFormat:@"%.1f %%", theFloatFive/48 * 100];
-    six.text = [NSString stringWithFormat:@"%.1f %%", theFloatSix/48 * 100];
-    overall.text = [NSString stringWithFormat:@"%.1f %%", temporary/192 * 100];
-    
-    
-    
-//    NSLog(@"%.4f, %.4f, %.4f, %.4f", levelThreeProgress.progress, levelFourProgress.progress, levelFiveProgress.progress, levelSixProgress.progress);
-    
-    if (theFloatThree >= 16) {
-        finalOverallLevel.text = @"3b";
-    }
-    if (theFloatThree >= 32) {
-        finalOverallLevel.text = @"3a";
-       
-    }
-    if (theFloatThree >= 40) {
-        if (theFloatFour >= 8) {
-            finalOverallLevel.text = @"4c";
-        }
-        if (theFloatFour >= 16) {
-            finalOverallLevel.text = @"4b";
-        }
-        if (theFloatFour >= 32) {
-            finalOverallLevel.text = @"4a";
-        }
-        if (theFloatFour >= 40) {
-            if (theFloatFive >= 8) {
-                finalOverallLevel.text = @"5c";
-            }
-            if (theFloatFive >= 16) {
-                finalOverallLevel.text = @"5b";
-            }
-            if (theFloatFive >= 32) {
-                finalOverallLevel.text = @"5a";
-            }
-            if (theFloatFive >= 40) {
-                if (theFloatSix >= 8) {
-                    finalOverallLevel.text = @"6c";
-                }
-                if (theFloatSix >= 16) {
-                    finalOverallLevel.text = @"6b";
-                }
-                if (theFloatSix >= 32) {
-                    finalOverallLevel.text = @"6a";
-                }
-            }
-        }
-    }
-  //  self.title = [NSString stringWithFormat:@"Level %@", finalOverallLevel.text];
- //   [myTableView reloadData];
+         
 }
 
 
     -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
     {
-        return [[[allLevels objectAtIndex:section] objectForKey:@"Levels"] count];
-        //return 2;
+        //return [[[allLevels objectAtIndex:section] objectForKey:@"Levels"] count];
+
+        return allCompletedTopics.count;
     }
 
     -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
     {
-        return allLevels.count;
+        //return allLevels.count;
+        return 1;
     }
 
     -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -258,18 +201,18 @@
         // Configure the cell...
         
         
-        //  cell.textLabel.text = [allCompletedTopics objectAtIndex:indexPath.row];
-        
+          cell.textLabel.text = [allCompletedTopics objectAtIndex:indexPath.row];
+        /*
         NSDictionary *dictionary = [allLevels objectAtIndex:indexPath.section];
         NSArray *array = [dictionary objectForKey:@"Levels"];
         NSString *cellValue = [array objectAtIndex:indexPath.row];
         cell.textLabel.text = cellValue;
-        
+        */
         return cell;
     }
 
     - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-        
+       /*
         NSString *theTitle = [[NSString alloc] init];
         
         switch (section) {
@@ -289,7 +232,7 @@
                 break;
         }
         //return theTitle;
-        
+        */
         return @"Your progress so far!";
     }
 
@@ -302,7 +245,11 @@
     
 }
 
-
+-(void)viewDidAppear:(BOOL)animated
+{
+    [self.myTableView reloadData];
+    NSLog(@"Hello");
+}
 
 - (void)viewDidUnload
 {
