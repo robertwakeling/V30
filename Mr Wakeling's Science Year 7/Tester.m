@@ -38,9 +38,9 @@
     return self;
 }
 
--(void)receiveNotification:(NSNotification *)notification
-{
-    //  theNotification = [[NSNotification alloc] init];
+    -(void)receiveNotification:(NSNotification *)notification
+    {
+  
     
     if (!path) {
         
@@ -69,16 +69,17 @@
     }
     NSLog(@"received %@", allCompletedTopics);
     [[NSNotificationCenter defaultCenter] postNotificationName:@"reloadTheTable" object:nil];
-  //  [self.myTableView reloadData];
+        [myTableView reloadData];
     
-}
+    }
 
-- (void)viewDidLoad
-{
+    - (void)viewDidLoad
+    {
     
     [super viewDidLoad];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTable:) name:@"reloadTheTable" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(reloadTable) name:@"reloadTheTable" object:nil];
+        
     
 	// Do any additional setup after loading the view.
     allCompletedTopics = [[[NSUserDefaults standardUserDefaults] objectForKey:@"hi"] mutableCopy];
@@ -108,22 +109,12 @@
     
     }
 
-
-
-/*
-  -(void)doItAgain
-{
-     
-    NSLog(@"delayed");
-    [myTableView reloadData];
-
-}
- */
-
-- (void)reloadTable:(NSNotification *)notification
+- (void)reloadTable
+//:(NSNotification *)notification
 {
     [myTableView reloadData];
     NSLog(@"hi");
+    
 }
 
 -(IBAction)pushToFirstView {
@@ -132,8 +123,8 @@
 }
 
 
--(void)creatingTheData
-{
+    -(void)creatingTheData
+    {
     
     
     if (!levelThree) {
@@ -164,11 +155,7 @@
                  //levelSixDict,
                  nil];
     
-    
-  //  [myTableView reloadData];
-
-    
-}
+    }
 
 
 
@@ -247,64 +234,64 @@
 }
 
 
--(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{
-    return [[[allLevels objectAtIndex:section] objectForKey:@"Levels"] count];
-    //return 2;
-}
-
--(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
-{
-    return allLevels.count;
-}
-
--(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    
-    static NSString *CellIdentifier = @"Cell";
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-    if(!cell)
+    -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
     {
-        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        return [[[allLevels objectAtIndex:section] objectForKey:@"Levels"] count];
+        //return 2;
     }
-    
-    // Configure the cell...
-    
 
-  //  cell.textLabel.text = [allCompletedTopics objectAtIndex:indexPath.row];
-    
-   NSDictionary *dictionary = [allLevels objectAtIndex:indexPath.section];
-   NSArray *array = [dictionary objectForKey:@"Levels"];
-   NSString *cellValue = [array objectAtIndex:indexPath.row];
-    cell.textLabel.text = cellValue;
-
-    return cell;
-}
-
-- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
-    
-    NSString *theTitle = [[NSString alloc] init];
-    
-    switch (section) {
-        case 0:
-            theTitle = @"Level 3";
-            break;
-        case 1:
-            theTitle = @"Level 4";
-            break;
-        case 2:
-            theTitle = @"Level 5";
-            break;
-        case 3:
-            theTitle = @"Level 6";
-            break;
-        default:
-            break;
+    -(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+    {
+        return allLevels.count;
     }
-    //return theTitle;
-    
-    return @"Your progress so far!";
-}
+
+    -(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+    {
+        
+        static NSString *CellIdentifier = @"Cell";
+        UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+        if(!cell)
+        {
+            cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:CellIdentifier];
+        }
+        
+        // Configure the cell...
+        
+        
+        //  cell.textLabel.text = [allCompletedTopics objectAtIndex:indexPath.row];
+        
+        NSDictionary *dictionary = [allLevels objectAtIndex:indexPath.section];
+        NSArray *array = [dictionary objectForKey:@"Levels"];
+        NSString *cellValue = [array objectAtIndex:indexPath.row];
+        cell.textLabel.text = cellValue;
+        
+        return cell;
+    }
+
+    - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+        
+        NSString *theTitle = [[NSString alloc] init];
+        
+        switch (section) {
+            case 0:
+                theTitle = @"Level 3";
+                break;
+            case 1:
+                theTitle = @"Level 4";
+                break;
+            case 2:
+                theTitle = @"Level 5";
+                break;
+            case 3:
+                theTitle = @"Level 6";
+                break;
+            default:
+                break;
+        }
+        //return theTitle;
+        
+        return @"Your progress so far!";
+    }
 
 
 -(void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath
